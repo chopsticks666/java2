@@ -1,18 +1,23 @@
 import java.util.*;
 
 class Employee implements Comparable<Employee> {
+    private int id;
     private String name;
     private int age;
 
-    public Employee(String name, int age) {
+    public Employee(int id, String name, int age) {
+        this.id = id;
         this.name = name;
         this.age = age;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getName() {
         return name;
     }
-
 
     public int getAge() {
         return age;
@@ -26,55 +31,94 @@ class Employee implements Comparable<Employee> {
     @Override
     public String toString() {
         return "Employee{" +
-                "name='" + name + '\'' +
-                ", age=" + age +
+                "ID=" + id +
+                ", Name='" + name + '\'' +
+                ", Age=" + age +
                 '}';
     }
 }
 
 class EmployeeManagementSystem {
     private List<Employee> employees;
+    private int currentId;
 
     public EmployeeManagementSystem() {
         this.employees = new ArrayList<>();
+        this.currentId = 1; // 初始ID从1开始
     }
 
-    // 添加员工
+    // 添加员工并自动生成ID
     public void addEmployee(String name, int age) {
-        employees.add(new Employee(name, age));
+        employees.add(new Employee(currentId++, name, age));
     }
 
-    // 删除员工
+    // 根据名字删除员工
     public void deleteEmployee(String name) {
         employees.removeIf(e -> e.getName().equals(name));
     }
 
     // 打印所有员工信息
     public void printAllEmployees() {
-        Collections.sort(employees);
-        for (Employee employee : employees) {
-            System.out.println(employee);
+        if (employees.isEmpty()) {
+            System.out.println("No employees found.");
+        } else {
+            Collections.sort(employees);
+            System.out.println("Employees list:");
+            for (Employee employee : employees) {
+                System.out.println(employee);
+            }
         }
     }
 }
 
 public class Main {
     public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
         EmployeeManagementSystem ems = new EmployeeManagementSystem();
+        boolean exit = false;
 
-        // 添加员工 A, B, C
-        ems.addEmployee("A", 25);
-        ems.addEmployee("B", 30);
-        ems.addEmployee("C", 22);
+        while (!exit) {
+            System.out.println("\nEmployee Management System");
+            System.out.println("1. Add Employee");
+            System.out.println("2. Delete Employee");
+            System.out.println("3. Print All Employees");
+            System.out.println("4. Exit");
+            System.out.print("Choose an option: ");
 
-        // 删除员工 B
-        ems.deleteEmployee("B");
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // consume newline
 
-        // 添加员工 A, D
-        ems.addEmployee("A", 28);
-        ems.addEmployee("D", 35);
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter employee name: ");
+                    String name = scanner.nextLine();
+                    System.out.print("Enter employee age: ");
+                    int age = scanner.nextInt();
+                    ems.addEmployee(name, age);
+                    System.out.println("Employee added.");
+                    break;
 
-        // 打印所有员工信息
-        ems.printAllEmployees();
+                case 2:
+                    System.out.print("Enter employee name to delete: ");
+                    String deleteName = scanner.nextLine();
+                    ems.deleteEmployee(deleteName);
+                    System.out.println("Employee deleted if existed.");
+                    break;
+
+                case 3:
+                    ems.printAllEmployees();
+                    break;
+
+                case 4:
+                    exit = true;
+                    System.out.println("Exiting system.");
+                    break;
+
+                default:
+                    System.out.println("Invalid option. Please try again.");
+            }
+        }
+
+        scanner.close();
     }
 }
