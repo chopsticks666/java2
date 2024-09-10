@@ -49,6 +49,12 @@ class EmployeeManagementSystem {
 
     // 添加员工并自动生成ID
     public void addEmployee(String name, int age) {
+        for (int i = 0; i < employees.size(); i++) {
+            String name_former = employees.get(i).getName();
+            if (Objects.equals(name, name_former)){
+                return;
+            }
+        }
         employees.add(new Employee(currentId++, name, age));
     }
 
